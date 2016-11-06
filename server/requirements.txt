@@ -1,0 +1,10 @@
+click==6.6
+Flask==0.11.1
+Flask-Admin==1.4.2
+itsdangerous==0.24
+Jinja2==2.8
+MarkupSafe==0.23
+peewee==2.8.5
+Werkzeug==0.11.11
+wtf-peewee==0.2.6
+WTForms==2.1
