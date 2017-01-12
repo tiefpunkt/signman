@@ -27,7 +27,8 @@ def get_config(token):
 		url = sign.getCurrentURL()
 	except Sign.DoesNotExist:
 		lines.append("# Sign not found")
-		url = DEFAULT_URL
+		# url = DEFAULT_URL
+		url = "http://signman.intern.munichmakerlab.de/nonregistered/%s" % token 
 	except URL.DoesNotExist:
 		lines.append("# No URL for sign found")
 		url = DEFAULT_URL
@@ -44,6 +45,10 @@ def get_urls(token):
 	except:
 		return "sign not found"
 	return jsonify(sign.activeURLs())
+
+@app.route('/nonregistered/<string:token>', methods=['GET'])
+def non_registered_screen(token):
+	return "<html><body>Connected to SignMan<br>Sign not registered<br>Sign Token: %s" % token
 
 if __name__ == '__main__':
 	app.run(debug=True)
