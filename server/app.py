@@ -3,21 +3,26 @@ from flask_admin import Admin
 from flask_admin.contrib.peewee import ModelView
 from db import Sign, URL, SignURL
 from adminViews import SignView
+from config import *
+
+from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = "osYJNVBIAZVBSKHBSLKFWbeiubkBLHBU3IBIHFBPI"
+app.secret_key = SECRET_KEY
 
 admin = Admin(app, name='SignMan', template_mode='bootstrap3')
 admin.add_view(SignView(Sign))
 admin.add_view(ModelView(URL))
 admin.add_view(ModelView(SignURL))
 
-DEFAULT_URL = "http://status.munichmakerlab.de"
-
-
 @app.route('/')
 def index():
-    return "Sign Man\n"
+    return '''<html><body>
+    Welcome to Sign Man<p>
+    <a href=./admin>Admin interface </a>
+
+    </html></body>
+    '''
 
 
 @app.route('/api/v1/config/<string:token>', methods=['GET'])
@@ -28,9 +33,11 @@ def get_config(token):
         sign = Sign.get(token=token)
         url = sign.getCurrentURL()
     except Sign.DoesNotExist:
-        lines.append("# Sign not found")
-        # url = DEFAULT_URL
-        url = "http://signman.intern.munichmakerlab.de/nonregistered/%s" % token
+        lines.append("# Sign not found, added to database")
+        url = "%s/nonregistered/%s" % (SIGNMAN_BASE_URL, token)
+        newSign = Sign(token=token, name="new-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"))
+        newSign.save()
+
     except URL.DoesNotExist:
         lines.append("# No URL for sign found")
         url = DEFAULT_URL
@@ -52,8 +59,12 @@ def get_urls(token):
 
 @app.route('/nonregistered/<string:token>', methods=['GET'])
 def non_registered_screen(token):
-    return "<html><body>Connected to SignMan<br>Sign not registered<br>Sign Token: %s" % token
+    return '''<html><body>
+    Connected to SignMan<p>
+    Sign Token: %s
+
+    </html></body>''' % token
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=debug)
