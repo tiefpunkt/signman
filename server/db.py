@@ -1,7 +1,8 @@
 from peewee import *
 from datetime import datetime
+from config import *
 
-db = SqliteDatabase('data/signage.db')
+db = SqliteDatabase(DB_DATA_DIR)
 
 
 class BaseModel(Model):
