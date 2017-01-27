@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_admin import Admin
 from flask_admin.contrib.peewee import ModelView
 from db import Sign, URL, SignURL
@@ -32,12 +32,15 @@ def get_config(token):
     try:
         sign = Sign.get(token=token)
         url = sign.getCurrentURL()
+        sign.last_ip=request.remote_addr
+        sign.save()
+
     except Sign.DoesNotExist:
         lines.append("# Sign not found")
         url = "%s/nonregistered/%s" % (SIGNMAN_BASE_URL, token)
         if auto_add_signs:
             lines.append("... added to database")
-            newSign = Sign(token=token, name="new-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"))
+            newSign = Sign(token=token, name="new-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"), last_ip=request.remote_addr)
             newSign.save()
 
     except URL.DoesNotExist:

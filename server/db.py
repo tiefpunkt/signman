@@ -24,6 +24,7 @@ class Sign(BaseModel):
     name = CharField()
     last_url = ForeignKeyField(URL, null=True)
     last_url_first_send = DateTimeField(null=True)
+    last_ip = CharField(null=True)
 
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.token)
