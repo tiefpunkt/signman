@@ -1,0 +1,9 @@
+.idea
+.project
+.DS_Store
+
+*.pyc
+*.db
+
+server/env
+server/data
