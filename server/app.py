@@ -33,10 +33,12 @@ def get_config(token):
         sign = Sign.get(token=token)
         url = sign.getCurrentURL()
     except Sign.DoesNotExist:
-        lines.append("# Sign not found, added to database")
+        lines.append("# Sign not found")
         url = "%s/nonregistered/%s" % (SIGNMAN_BASE_URL, token)
-        newSign = Sign(token=token, name="new-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"))
-        newSign.save()
+        if auto_add_signs:
+            lines.append("... added to database")
+            newSign = Sign(token=token, name="new-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"))
+            newSign.save()
 
     except URL.DoesNotExist:
         lines.append("# No URL for sign found")
