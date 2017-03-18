@@ -1,5 +1,6 @@
 from peewee import *
 from datetime import datetime
+from flask.ext.security import UserMixin, RoleMixin
 from config import *
 
 db = SqliteDatabase(DB_DATA_DIR)
@@ -67,6 +68,24 @@ class SignURL(BaseModel):
     url = ForeignKeyField(URL, related_name='signs')
     is_active = BooleanField()
 
+class Role(BaseModel, RoleMixin):
+    name = CharField(unique=True)
+    description = TextField(null=True)
+
+class User(BaseModel, UserMixin):
+    email = TextField()
+    password = TextField()
+    active = BooleanField(default=False)
+#    confirmed_at = DateTimeField(null=True)
+
+class UserRoles(BaseModel):
+    # Because peewee does not come with built-in many-to-many
+    # relationships, we need this intermediary class to link
+    # user to roles.
+    user = ForeignKeyField(User, related_name='roles')
+    role = ForeignKeyField(Role, related_name='users')
+    name = property(lambda self: self.role.name)
+    description = property(lambda self: self.role.description)
 
 db.connect()
-db.create_tables([URL, Sign, SignURL], True)
+db.create_tables([URL, Sign, SignURL, Role,User,UserRoles], True)
