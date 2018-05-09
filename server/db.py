@@ -13,6 +13,7 @@ class BaseModel(Model):
 class URL(BaseModel):
     url = CharField()
     duration = IntegerField()
+    description = CharField()
     is_active = BooleanField()
 
     def __unicode__(self):
