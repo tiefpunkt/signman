@@ -9,3 +9,6 @@ docker run -d \
   -e VIRTUAL_HOST=signman,signman.intern.munichmakerlab.de \
   tiefpunkt/signman
 ```
+
+## Updating
+To update existing databases to the latest schema version, execute **"migrate.py"**. 
