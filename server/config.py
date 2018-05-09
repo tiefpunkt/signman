@@ -5,3 +5,4 @@ DB_DATA_DIR = 'data/signage.db'
 
 debug = True
 auto_add_signs = False
+shutdown_endpoints_enabled = False

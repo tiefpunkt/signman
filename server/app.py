@@ -15,6 +15,14 @@ admin.add_view(SignView(Sign))
 admin.add_view(ModelView(URL))
 admin.add_view(ModelView(SignURL))
 
+
+def shutdown_flask():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+
 @app.route('/')
 def index():
     return '''<html><body>
@@ -69,6 +77,21 @@ def non_registered_screen(token):
     Sign Token: %s
 
     </html></body>''' % token
+
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    return "OK"
+
+
+@app.route('/quitquitquit', methods=['POST'])
+@app.route('/abortabortabort', methods=['POST'])
+def shutdown():
+    if shutdown_endpoints_enabled:
+        shutdown_flask()
+        return "Goodbye"
+    else:
+        return "Nope"
 
 
 if __name__ == '__main__':
