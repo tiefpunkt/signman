@@ -55,7 +55,7 @@ class Sign(BaseModel):
                                                            URL.is_active == True, URL.id > self.last_url.id).get()
                 except:
                     url = URL.select().join(SignURL).where(SignURL.sign == self, SignURL.is_active == True,
-                                                           URL.is_active == True).get()
+                                                           URL.is_active == True).order_by(URL.id.asc()).get()
                 self.last_url = url
                 self.last_url_first_send = datetime.now()
                 self.save()
