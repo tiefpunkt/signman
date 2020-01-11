@@ -3,7 +3,7 @@ from flask_admin import Admin
 #from flask_admin.contrib.peewee import ModelView
 from flask_admin import helpers as admin_helpers
 from flask_admin.menu import MenuLink
-from flask.ext.security import Security, PeeweeUserDatastore, \
+from flask_security import Security, PeeweeUserDatastore, \
     UserMixin, RoleMixin, login_required, user_registered
 from db import Sign, URL, SignURL, User, Role, UserRoles, db
 from adminViews import SignView, AuthModelView, AuthAdminIndexView, UserView

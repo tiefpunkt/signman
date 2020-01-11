@@ -1,6 +1,6 @@
 from peewee import *
 from datetime import datetime
-from flask.ext.security import UserMixin, RoleMixin
+from flask_security import UserMixin, RoleMixin
 from config import *
 
 db = SqliteDatabase(DB_DATA_DIR)

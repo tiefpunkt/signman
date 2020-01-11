@@ -1,4 +1,8 @@
-FROM python:2.7-onbuild
+FROM python:3.7
+
+COPY requirements.txt /usr/src/app/
+RUN pip install
+COPY . /usr/src/app
 
 RUN rm -rf /usr/src/app/data && \
   mkdir /data && \
