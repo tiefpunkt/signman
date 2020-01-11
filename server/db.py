@@ -17,7 +17,7 @@ class URL(BaseModel):
     description = CharField()
     is_active = BooleanField()
 
-    def __unicode__(self):
+    def __str__(self):
         if self.description == "< migrated >":
             return self.url
         return self.description
