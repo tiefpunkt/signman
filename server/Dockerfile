@@ -1,7 +1,7 @@
 FROM python:3.7
-
+WORKDIR /usr/src/app
 COPY requirements.txt /usr/src/app/
-RUN pip install
+RUN pip install -r requirements.txt
 COPY . /usr/src/app
 
 RUN rm -rf /usr/src/app/data && \
