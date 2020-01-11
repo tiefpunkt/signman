@@ -1,8 +1,12 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, url_for
 from flask_admin import Admin
-from flask_admin.contrib.peewee import ModelView
-from db import Sign, URL, SignURL
-from adminViews import SignView
+#from flask_admin.contrib.peewee import ModelView
+from flask_admin import helpers as admin_helpers
+from flask_admin.menu import MenuLink
+from flask.ext.security import Security, PeeweeUserDatastore, \
+    UserMixin, RoleMixin, login_required, user_registered
+from db import Sign, URL, SignURL, User, Role, UserRoles, db
+from adminViews import SignView, AuthModelView, AuthAdminIndexView, UserView
 from config import *
 
 from datetime import datetime
@@ -10,11 +14,11 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
-admin = Admin(app, name='SignMan', template_mode='bootstrap3')
-admin.add_view(SignView(Sign))
-admin.add_view(ModelView(URL))
-admin.add_view(ModelView(SignURL))
-
+app.config['SECURITY_REGISTERABLE'] = True
+app.config['SECURITY_PASSWORD_HASH'] = 'sha512_crypt'
+app.config['SECURITY_PASSWORD_SALT'] = SECRET_KEY
+user_datastore = PeeweeUserDatastore(db, User, Role, UserRoles)
+security = Security(app, user_datastore)
 
 def shutdown_flask():
     func = request.environ.get('werkzeug.server.shutdown')
@@ -22,6 +26,31 @@ def shutdown_flask():
         raise RuntimeError('Not running with the Werkzeug Server')
     func()
 
+
+admin = Admin(app, name='SignMan', template_mode='bootstrap3', index_view=AuthAdminIndexView())
+admin.add_view(SignView(Sign))
+admin.add_view(AuthModelView(URL))
+admin.add_view(AuthModelView(SignURL))
+admin.add_view(UserView(User))
+admin.add_link(MenuLink("Logout", endpoint='security.logout'))
+
+@security.context_processor
+def security_context_processor():
+    return dict(
+        admin_base_template=admin.base_template,
+        admin_view=admin.index_view,
+        h=admin_helpers,
+        get_url=url_for
+    )
+
+@user_registered.connect_via(app)
+def activateFirstUser(sender, user, confirm_token, **extra):
+    if User.select().count() == 1:
+        user.active = True
+    else:
+        user.active = False
+
+    user.save()
 
 @app.route('/')
 def index():

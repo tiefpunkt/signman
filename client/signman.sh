@@ -1,16 +1,25 @@
 #!/bin/sh
 
+# SignMan Digital Signage Client
 #
-# */5 * * * * /home/mumalab/display.sh
+# Crontab entry:
+# */1 * * * * /home/signman/signman.sh
 #
 
-HOST=signman.intern.munichmakerlab.de
+HOST=signs.munichmakes.de
 CURRENT_SIGN_FILE=/tmp/signman_current
 
-NODE=$(ip a | grep "link/ether" | awk '{print $2}' | tr -d ":")
-CONFIG_URL=http://$HOST/api/v1/config/$NODE
+NODE_ID=$(ip a | grep "link/ether" | awk '{print $2}' | tr -d ":")
+NODE_IP=$(ip -o a | grep "scope global" | awk '{print $4}')
+CONFIG_URL=http://${HOST}/api/v1/config/${NODE_ID}?ipaddr=${NODE_IP}
 
-DISPLAY_URL=$(curl -s $CONFIG_URL | grep -e "^URL" | awk '{print $2}')
+CONFIG_FILE=$(mktemp)
+curl -s -L ${CONFIG_URL} > ${CONFIG_FILE}
+
+DISPLAY_URL=$(cat $CONFIG_FILE | grep -e "^URL" | awk '{print $2}')
+
+rm ${CONFIG_FILE}
+
 BROWSER_PID=$(pgrep midori)
 
 if [ ! -e $CURRENT_SIGN_FILE ] || [ "`cat $CURRENT_SIGN_FILE`" != "$DISPLAY_URL" ] || [ ! "$BROWSER_PID" ]; then
