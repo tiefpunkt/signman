@@ -12,6 +12,6 @@ Jinja2==2.8
 MarkupSafe==0.23
 passlib==1.7.1
 peewee==2.8.5
-Werkzeug==0.11.11
+Werkzeug==0.15.3
 wtf-peewee==0.2.6
 WTForms==2.1
