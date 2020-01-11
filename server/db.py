@@ -18,7 +18,9 @@ class URL(BaseModel):
     is_active = BooleanField()
 
     def __unicode__(self):
-        return self.url
+        if self.description == "< migrated >":
+            return self.url
+        return self.description
 
 
 class Sign(BaseModel):
