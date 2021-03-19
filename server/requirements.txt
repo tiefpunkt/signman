@@ -8,7 +8,7 @@ Flask-Principal==0.4.0
 Flask-Security==1.7.5
 Flask-WTF==0.14.2
 itsdangerous==0.24
-Jinja2==2.8
+Jinja2==2.11.3
 MarkupSafe==0.23
 passlib==1.7.1
 peewee==2.8.5
