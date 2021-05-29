@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # SignMan Digital Signage Client
 #
@@ -20,12 +20,26 @@ DISPLAY_URL=$(cat $CONFIG_FILE | grep -e "^URL" | awk '{print $2}')
 
 rm ${CONFIG_FILE}
 
-BROWSER_PID=$(pgrep midori)
+if (which chromium &>/dev/null); then
+    BROWSER=chromium
+else
+    BROWSER=midori
+fi
+
+BROWSER_PID=$(pgrep ${BROWSER})
 
 if [ ! -e $CURRENT_SIGN_FILE ] || [ "`cat $CURRENT_SIGN_FILE`" != "$DISPLAY_URL" ] || [ ! "$BROWSER_PID" ]; then
 
-    nohup midori --display=:0.0 -e Fullscreen -a $DISPLAY_URL > /dev/null 2>/dev/null &
-    sleep 2
-    kill $BROWSER_PID
+    if [ "${BROWSER}" == "chromium"]; then
+        export DISPLAY=:0.0
+        nohup chromium --kiosk $DISPLAY_URL &>/dev/null &
+        sleep 2
+        kill $BROWSER_PID
+    else
+        nohup midori --display=:0.0 -e Fullscreen -a $DISPLAY_URL > /dev/null 2>/dev/null &
+        sleep 2
+        kill $BROWSER_PID
+    fi
+
     echo -n $DISPLAY_URL > $CURRENT_SIGN_FILE
 fi
