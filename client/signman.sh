@@ -30,7 +30,7 @@ BROWSER_PID=$(pgrep ${BROWSER})
 
 if [ ! -e $CURRENT_SIGN_FILE ] || [ "`cat $CURRENT_SIGN_FILE`" != "$DISPLAY_URL" ] || [ ! "$BROWSER_PID" ]; then
 
-    if [ "${BROWSER}" == "chromium"]; then
+    if [ "${BROWSER}" == "chromium" ]; then
         export DISPLAY=:0.0
         nohup chromium --kiosk $DISPLAY_URL &>/dev/null &
         sleep 2
