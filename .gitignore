@@ -5,5 +5,5 @@
 *.pyc
 *.db
 
-server/env
+server/env*
 server/data

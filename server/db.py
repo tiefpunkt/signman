@@ -91,4 +91,4 @@ class UserRoles(BaseModel):
     description = property(lambda self: self.role.description)
 
 db.connect()
-db.create_tables([URL, Sign, SignURL, Role,User,UserRoles], True)
+db.create_tables([URL, Sign, SignURL, Role,User,UserRoles], safe = True)
